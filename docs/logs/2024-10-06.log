@@ -1,0 +1,4 @@
+[2024-10-06 21:13:32]:[Info] Logger Initial!
+[2024-10-06 21:13:32]:[api.go]:Line 16: [INFO] Starting server on port: :8080
+[2024-10-06 21:14:28]:[handlers.go]:Line 34: [INFO] Received Name: admin, Email: Pass@work1
+

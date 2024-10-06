@@ -9,28 +9,28 @@ import (
 type APIServer struct {
 	Port string
 	Log  *logger.SysLog
-	mux  *http.ServeMux
 }
 
-// Init initializes the API server
+// Init khởi tạo server
 func (server *APIServer) Init() error {
-	server.mux = http.NewServeMux()
+	server.Log.Write("INFO", "Starting server on port: %s", server.Port)
+
+	// Bắt đầu server
+	if err := http.ListenAndServe(server.Port, nil); err != nil {
+		server.Log.Write("ERR", "Error starting server: %s", err)
+		return err
+	}
 	return nil
 }
 
-// Start starts the HTTP server
-func (server *APIServer) Start() error {
-	server.Log.Write("INFO", ":%s", server.Port)
-	return http.ListenAndServe(":"+server.Port, server.mux)
-}
-
+// Route thêm route cho server
 func (apiServer *APIServer) Route(method, path string, handlerFunc http.HandlerFunc) {
 	switch method {
 	case http.MethodGet:
-		apiServer.mux.HandleFunc(path, handlerFunc)
+		http.HandleFunc(path, handlerFunc)
 	case http.MethodPost:
-		apiServer.mux.HandleFunc(path, handlerFunc)
+		http.HandleFunc(path, handlerFunc)
 	default:
-		apiServer.Log.Write("WAR", "Unsupported method: %s\n", method)
+		apiServer.Log.Write("WAR", "Unsupported method: %s", method)
 	}
 }

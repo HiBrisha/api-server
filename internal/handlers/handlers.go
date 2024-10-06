@@ -31,5 +31,5 @@ func (info *Info) InsertUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	info.Log.Write("INFO", "Received Name: %s, Email: %s\n", data.Name, data.Password)
+	info.Log.Write("INFO", "Received Name: %s, Password: %s\n", data.Name, data.Password)
 }

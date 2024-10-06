@@ -7,33 +7,31 @@ import (
 	"net/http"
 )
 
-var log logger.SysLog = logger.SysLog{
-	StrDir: "../docs/logs/",
-}
-
 func main() {
+	log := logger.SysLog{
+		StrDir: "../api-server/docs/logs/",
+	}
 	log.Init()
 	//Test API Server
-	apiServer := &api.APIServer{
-		Port: "3000",
+	server := &api.APIServer{
+		Port: ":8080",
 		Log:  &log,
 	}
 
-	handler := handlers.Info{
+	handlers := handlers.Info{
 		Log: &log,
 	}
-	apiServer.Route(http.MethodPost, "/login/signup", handler.InsertUser)
 
-	// Initialize the server
-	err := apiServer.Init()
-	if err != nil {
-		log.Write("ERR", "Unable to initialize server: %v\n", err)
-		return
-	}
+	// Thiết lập các route
+	server.Route(http.MethodPost, "/login/signup", handlers.InsertUser)
 
-	// Start the server
-	if err := apiServer.Start(); err != nil {
-		log.Write("ERR", "Unable to start server: %v\n", err)
+	server.Route(http.MethodGet, "/hello", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Hello, World!"))
+	})
+
+	// Khởi động server
+	if err := server.Init(); err != nil {
+		log.Write("ERR", "Failed to start server: %s", err)
 	}
 
 }
